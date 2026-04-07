@@ -1,0 +1,69 @@
+# Java compiled classes
+*.class
+
+# Log files
+*.log
+
+# Package files
+*.jar
+*.war
+*.ear
+
+# NetBeans
+nbproject/private/
+build/
+dist/
+nbbuild/
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# IntelliJ
+*.iml
+*.iws
+/.idea/
+
+# Maven
+/target/
+/.mvn/
+
+# Gradle
+.gradle/
+/build/
+
+# General IDE/editor
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.bak
+*~
+
+# Runtime crash logs
+hs_err_pid*
+
+# Environment files
+*.env
+
+# Binary artifacts
+*.class
+*.exe
+*.dll
+
+# Ignore compiled distributions
+/dist/
+
+# Keep node modules if any
+node_modules/
+
+# Ignore user-specific files
+*.swp
+
+# End of .gitignore
