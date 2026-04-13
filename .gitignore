@@ -66,4 +66,7 @@ node_modules/
 # Ignore user-specific files
 *.swp
 
+# Outro
+*.zip
+
 # End of .gitignore
