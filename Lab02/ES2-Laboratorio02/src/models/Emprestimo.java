@@ -10,68 +10,87 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 /**
- * Representa um registo unico de emprestimo na biblioteca.
+ * @brief  Representa um registo único de empréstimo na biblioteca.
  *
- * Enunciado: "cada emprestimo possui uma data de inicio e uma data prevista
- * de devolucao... cada emprestimo corresponde a um registo unico, envolvendo
- * apenas um utilizador e um unico livro."
+ * Enunciado: "cada empréstimo possui uma data de início e uma data prevista
+ * de devolução... cada empréstimo corresponde a um registo único, envolvendo
+ * apenas um utilizador e um único exemplar."
  *
- * Associacao com Utilizador: 1 Emprestimo -> 1 Utilizador
- * Associacao com Exemplar:   1 Emprestimo -> 1 Exemplar
- * 
- * @author Emanuel
+ * Associação com Utilizador: 1 Empréstimo → 1 Utilizador
+ * Associação com Exemplar:   1 Empréstimo → 1 Exemplar
  */
 public class Emprestimo {
-
-    private static int contadorId = 1; // gerador automatico de IDs
 
     private int              id;
     private Utilizador       utilizador;
     private Exemplar         exemplar;
     private LocalDate        dataInicio;
     private LocalDate        dataPrevistaDevolucao;
-    private LocalDate        dataEfetivaDevolucao;  // null enquanto nao devolvido
+    private LocalDate        dataEfetivaDevolucao;
     private EstadoEmprestimo estado;
 
-    // Prazo padrao de emprestimo: 14 dias
-    private static final int PRAZO_DIAS = 14;
+    /** Prazo padrão de empréstimo em dias. */
+    public static final int PRAZO_DIAS = 14;
 
-    // ── Construtor ──────────────────────────────────────────────────────────
+    // ── Construtores ─────────────────────────────────────────────────────────
 
-    public Emprestimo(Utilizador utilizador, Exemplar exemplar) {
-        this.id                    = contadorId++;
+    /**
+     * @brief  Construtor usado ao criar um novo empréstimo em runtime.
+     *         O ID é atribuído pelo MySQL (AUTO_INCREMENT).
+     * @param  id         ID gerado pelo banco de dados.
+     * @param  utilizador Utilizador que requisitou.
+     * @param  exemplar   Exemplar emprestado.
+     * @param  inicio     Data de início do empréstimo.
+     * @param  devolucao  Data prevista de devolução.
+     */
+    public Emprestimo(int id, Utilizador utilizador, Exemplar exemplar,
+                      LocalDate inicio, LocalDate devolucao) {
+        this.id                    = id;
         this.utilizador            = utilizador;
         this.exemplar              = exemplar;
-        this.dataInicio            = LocalDate.now();
-        this.dataPrevistaDevolucao = LocalDate.now().plusDays(PRAZO_DIAS);
+        this.dataInicio            = inicio;
+        this.dataPrevistaDevolucao = devolucao;
         this.dataEfetivaDevolucao  = null;
         this.estado                = EstadoEmprestimo.ATIVO;
+    }
+
+    /**
+     * @brief  Construtor completo usado ao reconstruir um empréstimo da base de dados.
+     * @param  id              ID do empréstimo.
+     * @param  utilizador      Utilizador associado.
+     * @param  exemplar        Exemplar associado.
+     * @param  inicio          Data de início.
+     * @param  devolucaoPrev   Data prevista de devolução.
+     * @param  devolucaoEfet   Data efectiva de devolução (pode ser null).
+     * @param  estado          Estado actual do empréstimo.
+     */
+    public Emprestimo(int id, Utilizador utilizador, Exemplar exemplar,
+                      LocalDate inicio, LocalDate devolucaoPrev,
+                      LocalDate devolucaoEfet, EstadoEmprestimo estado) {
+        this.id                    = id;
+        this.utilizador            = utilizador;
+        this.exemplar              = exemplar;
+        this.dataInicio            = inicio;
+        this.dataPrevistaDevolucao = devolucaoPrev;
+        this.dataEfetivaDevolucao  = devolucaoEfet;
+        this.estado                = estado;
     }
 
     // ── Comportamentos principais ─────────────────────────────────────────────
 
     /**
-     * Regista a devolucao do exemplar.
-     * Enunciado: "no momento da devolucao, o sistema deve atualizar o estado
-     * do emprestimo e refletir automaticamente a reposicao do exemplar"
+     * @brief  Marca o empréstimo como devolvido em memória.
+     *         A persistência no banco é feita pelo BibliotecaService.
+     * @param  dataEfetiva  Data real em que o livro foi devolvido.
      */
-    public void devolver() {
-        if (estado == EstadoEmprestimo.DEVOLVIDO) {
-            System.out.println("  ⚠  Emprestimo #" + id + " ja foi devolvido anteriormente.");
-            return;
-        }
-        this.dataEfetivaDevolucao = LocalDate.now();
+    public void marcarDevolvido(LocalDate dataEfetiva) {
+        this.dataEfetivaDevolucao = dataEfetiva;
         this.estado               = EstadoEmprestimo.DEVOLVIDO;
-        // Repoe o exemplar como disponivel — coerencia com o enunciado
         exemplar.setEstado(EstadoExemplar.DISPONIVEL);
-        System.out.println("  ✔  Livro \"" + exemplar.getLivro().getTitulo()
-                + "\" (Exemplar #" + exemplar.getExemplarId()
-                + ") devolvido por " + utilizador.getNomeCompleto() + ".");
     }
 
     /**
-     * Verifica e actualiza o estado para ATRASADO se necessario.
-     * Enunciado: estado pode ser "ativo, devolvido ou atrasado"
+     * @brief  Verifica e actualiza o estado para ATRASADO se necessário.
      */
     public void verificarAtraso() {
         if (estado == EstadoEmprestimo.ATIVO
@@ -81,7 +100,8 @@ public class Emprestimo {
     }
 
     /**
-     * Indica se o emprestimo esta activo ou atrasado (ainda em posse do utilizador).
+     * @brief   Indica se o empréstimo ainda está em posse do utilizador.
+     * @return  {@code true} se ATIVO ou ATRASADO.
      */
     public boolean estaAtivo() {
         return estado == EstadoEmprestimo.ATIVO
@@ -89,63 +109,38 @@ public class Emprestimo {
     }
 
     /**
-     * Calcula o numero de dias de atraso (0 se nao estiver atrasado).
+     * @brief   Calcula os dias de atraso.
+     * @return  Número de dias de atraso, ou 0 se não estiver atrasado.
      */
     public long getDiasAtraso() {
         if (estado != EstadoEmprestimo.ATRASADO) return 0;
-        LocalDate referencia = (dataEfetivaDevolucao != null)
-                ? dataEfetivaDevolucao
-                : LocalDate.now();
-        return ChronoUnit.DAYS.between(dataPrevistaDevolucao, referencia);
+        LocalDate ref = (dataEfetivaDevolucao != null) ? dataEfetivaDevolucao : LocalDate.now();
+        return ChronoUnit.DAYS.between(dataPrevistaDevolucao, ref);
     }
 
     // ── Getters ──────────────────────────────────────────────────────────────
 
-    public int getId() {
-        return id;
-    }
+    public int              getId()                    { return id; }
+    public Utilizador       getUtilizador()            { return utilizador; }
+    public Exemplar         getExemplar()              { return exemplar; }
+    public LocalDate        getDataInicio()            { return dataInicio; }
+    public LocalDate        getDataPrevistaDevolucao() { return dataPrevistaDevolucao; }
+    public LocalDate        getDataEfetivaDevolucao()  { return dataEfetivaDevolucao; }
+    public EstadoEmprestimo getEstado()                { return estado; }
 
-    public Utilizador getUtilizador() {
-        return utilizador;
-    }
-
-    public Exemplar getExemplar() {
-        return exemplar;
-    }
-
-    public LocalDate getDataInicio() {
-        return dataInicio;
-    }
-
-    public LocalDate getDataPrevistaDevolucao() {
-        return dataPrevistaDevolucao;
-    }
-
-    public LocalDate getDataEfetivaDevolucao() {
-        return dataEfetivaDevolucao;
-    }
-
-    public EstadoEmprestimo getEstado() {
-        return estado;
-    }
-
-    // ── Utilitarios ──────────────────────────────────────────────────────────
+    // ── Utilitários ──────────────────────────────────────────────────────────
 
     @Override
     public String toString() {
-        String devolucao = (dataEfetivaDevolucao != null)
-                ? dataEfetivaDevolucao.toString()
-                : "pendente";
+        String dev = (dataEfetivaDevolucao != null) ? dataEfetivaDevolucao.toString() : "pendente";
         return String.format(
-                "Emprestimo #%d | Utilizador: %s | Exemplar #%d (\"%s\") | "
-                + "Inicio: %s | Prev. devolucao: %s | Dev. efectiva: %s | Estado: %s",
+                "Empréstimo #%d | %s | Exemplar #%d (\"%s\") | "
+                + "Início: %s | Prev: %s | Dev: %s | %s",
                 id,
                 utilizador.getNomeCompleto(),
                 exemplar.getExemplarId(),
                 exemplar.getLivro().getTitulo(),
-                dataInicio,
-                dataPrevistaDevolucao,
-                devolucao,
+                dataInicio, dataPrevistaDevolucao, dev,
                 estado.getDescricao());
     }
 
@@ -153,13 +148,9 @@ public class Emprestimo {
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (!(obj instanceof Emprestimo)) return false;
-        Emprestimo outro = (Emprestimo) obj;
-        return this.id == outro.id;
+        return this.id == ((Emprestimo) obj).id;
     }
 
     @Override
-    public int hashCode() {
-        return Integer.hashCode(id);
-    }
+    public int hashCode() { return Integer.hashCode(id); }
 }
-
