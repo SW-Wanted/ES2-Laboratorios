@@ -9,3 +9,6 @@
 ### 🗂️ [Laboratório #02](./Lab02/) – Sistema de Biblioteca Académica
 - **Tema:** Modelagem e Implementação de um Sistema de Biblioteca Académica
 - **Objetivo:** Interpretar um problema real e traduzi-lo em um modelo orientado a objetos, Identificar corretamente classes, atributos e responsabilidades, Definir relações e cardinalidades com precisão, Aplicar conceitos de UML na implementação prática de software e Garantir coerência entre análise, modelação e codificação
+### 🗂️ [Laboratório #03](./Lab03/) – Introdução ao Git e Github
+- **Tema:** Controlo de Versão com Git & GitHub
+- **Objetivo:** 
