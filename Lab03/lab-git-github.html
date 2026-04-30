@@ -1,0 +1,2597 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LAB Git & GitHub — Guia Prático de Grupo</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --green: #3fb950;
+      --green-dim: #1a4226;
+      --blue: #58a6ff;
+      --blue-dim: #1c2d3f;
+      --yellow: #e3b341;
+      --yellow-dim: #2d2208;
+      --red: #f85149;
+      --red-dim: #2d1317;
+      --purple: #bc8cff;
+      --purple-dim: #1e1535;
+      --orange: #f0883e;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --text-dim: #484f58;
+      --radius: 8px;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      height: 60px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 30px;
+      height: 30px;
+      background: var(--green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: #000;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+    }
+
+    .progress-bar-wrap {
+      flex: 1;
+      max-width: 320px;
+    }
+
+    .progress-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .progress-bar {
+      background: var(--surface2);
+      border-radius: 99px;
+      height: 6px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      background: linear-gradient(90deg, var(--green), var(--blue));
+      height: 100%;
+      width: 0%;
+      transition: width .4s ease;
+      border-radius: 99px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 72px 32px 56px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--green-dim);
+      border: 1px solid var(--green);
+      border-radius: 99px;
+      padding: 4px 14px;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--green);
+      margin-bottom: 24px;
+      letter-spacing: .06em;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 20px;
+      letter-spacing: -.02em;
+    }
+
+    .hero h1 span {
+      color: var(--green);
+    }
+
+    .hero p {
+      color: var(--text-muted);
+      font-size: 17px;
+      max-width: 640px;
+      margin-bottom: 32px;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .meta-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+
+    /* ── LAYOUT ── */
+    .layout {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 32px 80px;
+      gap: 40px;
+      align-items: start;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      position: sticky;
+      top: 80px;
+    }
+
+    .sidebar-title {
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 12px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .toc {
+      list-style: none;
+    }
+
+    .toc li {
+      margin-bottom: 2px;
+    }
+
+    .toc a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 10px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: background .2s, color .2s;
+      font-weight: 600;
+    }
+
+    .toc a:hover {
+      background: var(--surface2);
+      color: var(--text);
+    }
+
+    .toc a.active {
+      background: var(--green-dim);
+      color: var(--green);
+    }
+
+    .toc-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-dim);
+      min-width: 18px;
+    }
+
+    .toc a.done .toc-num::before {
+      content: '✓';
+      color: var(--green);
+    }
+
+    /* ── CONTENT ── */
+    .content {
+      min-width: 0;
+    }
+
+    /* ── SECTION ── */
+    .lab-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 28px;
+      overflow: hidden;
+      transition: border-color .3s;
+    }
+
+    .lab-section.completed {
+      border-color: var(--green);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 24px;
+      cursor: pointer;
+      user-select: none;
+      background: var(--surface);
+      transition: background .2s;
+    }
+
+    .section-header:hover {
+      background: var(--surface2);
+    }
+
+    .section-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text-muted);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 3px 8px;
+      white-space: nowrap;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      flex: 1;
+    }
+
+    .section-tag {
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      border-radius: 99px;
+      padding: 2px 10px;
+      border: 1px solid;
+      white-space: nowrap;
+    }
+
+    .tag-config {
+      color: var(--blue);
+      border-color: var(--blue);
+      background: var(--blue-dim);
+    }
+
+    .tag-ssh {
+      color: var(--purple);
+      border-color: var(--purple);
+      background: var(--purple-dim);
+    }
+
+    .tag-commit {
+      color: var(--green);
+      border-color: var(--green);
+      background: var(--green-dim);
+    }
+
+    .tag-nav {
+      color: var(--yellow);
+      border-color: var(--yellow);
+      background: var(--yellow-dim);
+    }
+
+    .tag-undo {
+      color: var(--red);
+      border-color: var(--red);
+      background: var(--red-dim);
+    }
+
+    .tag-inspect {
+      color: var(--orange);
+      border-color: var(--orange);
+    }
+
+    .section-chevron {
+      color: var(--text-muted);
+      transition: transform .3s;
+      font-size: 18px;
+    }
+
+    .lab-section.open .section-chevron {
+      transform: rotate(180deg);
+    }
+
+    .section-body {
+      display: none;
+      padding: 0 24px 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .lab-section.open .section-body {
+      display: block;
+    }
+
+    /* ── CONCEPT BOX ── */
+    .concept {
+      background: var(--blue-dim);
+      border-left: 3px solid var(--blue);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin: 18px 0;
+      font-size: 14px;
+      color: #c9d1d9;
+    }
+
+    .concept strong {
+      color: var(--blue);
+      font-weight: 700;
+    }
+
+    /* ── TERMINAL ── */
+    .terminal {
+      background: #010409;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin: 14px 0;
+      overflow: hidden;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .terminal-bar {
+      background: var(--surface2);
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .t-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .t-dot.red {
+      background: #ff5f57;
+    }
+
+    .t-dot.yel {
+      background: #febc2e;
+    }
+
+    .t-dot.grn {
+      background: #28c840;
+    }
+
+    .terminal-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-left: auto;
+      letter-spacing: .06em;
+    }
+
+    .terminal-body {
+      padding: 16px 18px;
+      font-size: 13.5px;
+      line-height: 1.8;
+    }
+
+    .cmd-line {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 2px;
+    }
+
+    .prompt {
+      color: var(--green);
+      user-select: none;
+    }
+
+    .cmd {
+      color: #e6edf3;
+    }
+
+    .cmd .kw {
+      color: var(--blue);
+    }
+
+    .cmd .flag {
+      color: var(--orange);
+    }
+
+    .cmd .str {
+      color: var(--yellow);
+    }
+
+    .cmd .comment {
+      color: var(--text-muted);
+    }
+
+    .out {
+      color: var(--text-muted);
+      padding-left: 20px;
+      font-size: 12.5px;
+      margin-bottom: 2px;
+    }
+
+    .out.success {
+      color: var(--green);
+    }
+
+    .out.warn {
+      color: var(--yellow);
+    }
+
+    .out.error {
+      color: var(--red);
+    }
+
+    .copy-btn {
+      margin-left: auto;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 2px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+      transition: background .2s, color .2s;
+    }
+
+    .copy-btn:hover {
+      background: var(--border);
+      color: var(--text);
+    }
+
+    .copy-btn.copied {
+      color: var(--green);
+      border-color: var(--green);
+    }
+
+    /* ── STEP ── */
+    .steps {
+      counter-reset: step;
+      margin: 18px 0;
+    }
+
+    .step {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 22px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--border);
+      counter-increment: step;
+    }
+
+    .step:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .step-num {
+      background: var(--surface2);
+      border: 2px solid var(--border);
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      min-width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 3px;
+      flex-shrink: 0;
+    }
+
+    .step-num::before {
+      content: counter(step);
+    }
+
+    .step-content {
+      flex: 1;
+    }
+
+    .step-content p {
+      font-size: 14.5px;
+      color: #c9d1d9;
+      margin-bottom: 8px;
+    }
+
+    /* ── NOTE / CADERNO ── */
+    .note-caderno {
+      background: var(--yellow-dim);
+      border: 1px solid var(--yellow);
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 14px 0;
+      font-size: 13.5px;
+    }
+
+    .note-caderno .note-title {
+      color: var(--yellow);
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .note-caderno ul {
+      padding-left: 18px;
+      color: #d3aa50;
+    }
+
+    .note-caderno li {
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+
+    /* ── DISCUSS ── */
+    .discuss {
+      background: var(--purple-dim);
+      border: 1px solid var(--purple);
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 14px 0;
+      font-size: 13.5px;
+    }
+
+    .discuss .note-title {
+      color: var(--purple);
+    }
+
+    .discuss ul {
+      padding-left: 18px;
+      color: #c9aff5;
+    }
+
+    .discuss li {
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+
+    /* ── WARN NOTE ── */
+    .warn-note {
+      background: var(--red-dim);
+      border: 1px solid var(--red);
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 14px 0;
+      font-size: 13px;
+    }
+
+    .warn-note .note-title {
+      color: var(--red);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    /* ── CHECK TASK ── */
+    .task-list {
+      list-style: none;
+      margin: 12px 0;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 0;
+      font-size: 14px;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 6px;
+      padding: 8px;
+      transition: background .2s;
+    }
+
+    .task-item:hover {
+      background: var(--surface2);
+    }
+
+    .task-item input[type=checkbox] {
+      accent-color: var(--green);
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .task-item.done {
+      color: var(--green);
+      text-decoration: line-through;
+      opacity: .7;
+    }
+
+    /* ── COMPLETE BTN ── */
+    .complete-btn {
+      margin-top: 20px;
+      padding: 10px 22px;
+      background: var(--green-dim);
+      border: 1px solid var(--green);
+      color: var(--green);
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background .2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+    }
+
+    .complete-btn:hover {
+      background: #1a4226;
+    }
+
+    .complete-btn.done-btn {
+      background: var(--green);
+      color: #000;
+    }
+
+    /* ── SECTION DIVIDER ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 8px 0 20px;
+    }
+
+    /* ── REPORT SECTION ── */
+    .report-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px 24px;
+      margin-bottom: 28px;
+    }
+
+    .report-section h2 {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--purple);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .report-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .report-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .report-card strong {
+      color: var(--text);
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 32px;
+      font-size: 12px;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 780px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .hero {
+        padding: 40px 20px 32px;
+      }
+
+      .layout {
+        padding: 0 16px 60px;
+      }
+
+      .report-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ── ANALOGY ── */
+    .analogy {
+      border-left: 3px solid var(--orange);
+      background: #1a1208;
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      font-size: 13.5px;
+      color: #c9a060;
+      margin: 12px 0;
+      font-style: italic;
+    }
+
+    .analogy strong {
+      color: var(--orange);
+      font-style: normal;
+    }
+
+    code {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .88em;
+      color: var(--orange);
+    }
+
+    h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 20px 0 10px;
+    }
+
+    .inline-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      background: var(--green-dim);
+      color: var(--green);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-weight: 700;
+    }
+
+    .two-computer {
+      background: #0e1a2d;
+      border: 1px solid var(--blue);
+      border-radius: 8px;
+      padding: 14px 18px;
+      font-size: 13.5px;
+      margin: 14px 0;
+    }
+
+    .two-computer .note-title {
+      color: var(--blue);
+      font-weight: 700;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: .08em;
+    }
+
+    .two-computer ul {
+      padding-left: 18px;
+      color: #a0c4ff;
+    }
+
+    .two-computer li {
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon">git</div>
+      LAB Git & GitHub
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-label">
+        <span>Progresso do Laboratório</span>
+        <span id="pct">0%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">🧪 Laboratório Prático — Trabalho em Grupo</div>
+    <h1>Controlo de Versão com <span>Git & GitHub</span></h1>
+    <p>Um laboratório guiado passo a passo para compreender, na prática, como o Git e o GitHub funcionam. Trabalhem em
+      equipa, executem os comandos, anotem os resultados e discutam o que observaram.</p>
+    <div class="hero-meta">
+      <div class="meta-item">
+        <div class="meta-dot"></div> Mínimo 2 computadores
+      </div>
+      <div class="meta-item">
+        <div class="meta-dot" style="background:var(--blue)"></div> 12 Secções práticas
+      </div>
+      <div class="meta-item">
+        <div class="meta-dot" style="background:var(--yellow)"></div> Anotem tudo no caderno
+      </div>
+      <div class="meta-item">
+        <div class="meta-dot" style="background:var(--purple)"></div> Relatório final obrigatório
+      </div>
+    </div>
+  </section>
+
+  <!-- LAYOUT PRINCIPAL -->
+  <div class="layout">
+
+    <!-- SIDEBAR TOC -->
+    <aside class="sidebar">
+      <div class="sidebar-title">Índice do Laboratório</div>
+      <ul class="toc" id="toc">
+        <li><a href="#s0" data-sec="0"><span class="toc-num">01</span> Configuração Inicial</a></li>
+        <li><a href="#s1" data-sec="1"><span class="toc-num">02</span> Chave SSH</a></li>
+        <li><a href="#s2" data-sec="2"><span class="toc-num">03</span> Primeiro Repositório</a></li>
+        <li><a href="#s3" data-sec="3"><span class="toc-num">04</span> Novo Commit</a></li>
+        <li><a href="#s4" data-sec="4"><span class="toc-num">05</span> Git Status & Log</a></li>
+        <li><a href="#s5" data-sec="5"><span class="toc-num">06</span> Git Stage & Diff</a></li>
+        <li><a href="#s6" data-sec="6"><span class="toc-num">07</span> Git Checkout</a></li>
+        <li><a href="#s7" data-sec="7"><span class="toc-num">08</span> .gitignore</a></li>
+        <li><a href="#s8" data-sec="8"><span class="toc-num">09</span> Clonar Projecto</a></li>
+        <li><a href="#s9" data-sec="9"><span class="toc-num">10</span> Colaboração 2 PCs</a></li>
+        <li><a href="#s10" data-sec="10"><span class="toc-num">11</span> Deletar Commits</a></li>
+        <li><a href="#s11" data-sec="11"><span class="toc-num">12</span> Revisão Final</a></li>
+      </ul>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="content">
+
+      <!-- ════════════════════════════════════════════
+         SECÇÃO 0 — CONFIGURAÇÃO INICIAL
+    ═══════════════════════════════════════════════ -->
+      <div class="lab-section" id="s0">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="section-num">FASE 01</span>
+          <span class="section-title">Configurar a Identidade no Git</span>
+          <span class="section-tag tag-config">git config</span>
+          <span class="section-chevron">▾</span>
+        </div>
+        <div class="section-body">
+          <div class="concept">
+            <strong>O que é?</strong> Antes de qualquer operação, o Git precisa saber quem está a trabalhar. É como
+            assinar um documento: cada commit ficará eternamente com o teu nome e e-mail.
+          </div>
+          <div class="analogy">
+            <strong>Analogia:</strong> Imagina que vais assinar contratos numa empresa. Antes de começar, o departamento
+            regista: "Quem és tu? Qual é o teu e-mail?" — O Git faz exactamente isso.
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p>Abra o terminal (Git Bash no Windows, Terminal no macOS/Linux). Configure o <strong>nome</strong> do
+                  utilizador:</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div><button class="copy-btn"
+                      onclick="copyCmd(this,'git config --global user.name \" Seu Nome Completo\"')">copiar</button>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        config <span class="flag">--global</span> user.name <span class="str">"Seu Nome
+                          Completo"</span></span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p>Configure o <strong>e-mail</strong>. Use o mesmo que vai usar no GitHub:</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div><button class="copy-btn"
+                      onclick="copyCmd(this,'git config --global user.email \" seuemail@exemplo.com\"')">copiar</button>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        config <span class="flag">--global</span> user.email <span
+                          class="str">"seuemail@exemplo.com"</span></span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p>Configure o <strong>editor padrão</strong> como VS Code (ou nano, se preferir):</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div><button class="copy-btn"
+                      onclick="copyCmd(this,'git config --global core.editor \" code --wait\"')">copiar</button>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        config <span class="flag">--global</span> core.editor <span class="str">"code
+                          --wait"</span></span></div>
+                    <div class="out comment"># Para nano: git config --global core.editor "nano"</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p><strong>Verifique</strong> todas as configurações feitas:</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div><button class="copy-btn"
+                      onclick="copyCmd(this,'git config --list')">copiar</button>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        config <span class="flag">--list</span></span></div>
+                    <div class="out">user.name=Seu Nome Completo</div>
+                    <div class="out">user.email=seuemail@exemplo.com</div>
+                    <div class="out">core.editor=code --wait</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="note-caderno">
+            <div class="note-title">✏️ Anotar no Caderno</div>
+            <ul>
+              <li>O que faz a flag <code>--global</code>? Onde ficam gravadas essas configurações no teu computador?
+              </li>
+              <li>Qual é o ficheiro do sistema onde o Git guarda a configuração global?</li>
+              <li>Escreve os 3 comandos que executaste e o que cada um configura.</li>
+            </ul>
+          </div>
+
+          <div class="discuss">
+            <div class="note-title">💬 Discussão em Grupo</div>
+            <ul>
+              <li>O que acontece se dois membros da equipa tiverem o mesmo nome configurado no Git?</li>
+              <li>Por que é importante o e-mail ser igual ao do GitHub?</li>
+            </ul>
+          </div>
+
+          <ul class="task-list">
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> Nome configurado nos dois
+              computadores</li>
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> E-mail configurado nos dois
+              computadores</li>
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> <code>git config --list</code>
+              executado e resultado anotado</li>
+          </ul>
+
+          <button class="complete-btn" onclick="completeSection(this, 0)">✓ Marcar secção como concluída</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════════
+         SECÇÃO 1 — SSH
+    ═══════════════════════════════════════════════ -->
+      <div class="lab-section" id="s1">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="section-num">FASE 02</span>
+          <span class="section-title">Configurar Chave SSH no GitHub</span>
+          <span class="section-tag tag-ssh">SSH</span>
+          <span class="section-chevron">▾</span>
+        </div>
+        <div class="section-body">
+          <div class="concept">
+            <strong>O que é SSH?</strong> SSH (Secure Shell) é um protocolo de comunicação segura. Em vez de digitar a
+            tua password do GitHub cada vez que fazes um push, a chave SSH autentica-te automaticamente — como uma chave
+            física para abrir uma porta.
+          </div>
+          <div class="analogy">
+            <strong>Analogia:</strong> É como ter um passe de segurança. Em vez de mostrar o teu bilhete de identidade e
+            aguardar confirmação, apresentas o passe e a porta abre automaticamente.
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p>Gere um par de chaves SSH (pública + privada):</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div><button class="copy-btn"
+                      onclick="copyCmd(this,'ssh-keygen -t ed25519 -C \" seuemail@exemplo.com\"')">copiar</button>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd">ssh-keygen <span
+                          class="flag">-t</span> ed25519 <span class="flag">-C</span> <span
+                          class="str">"seuemail@exemplo.com"</span></span></div>
+                    <div class="out warn">Generating public/private ed25519 key pair.</div>
+                    <div class="out">Enter file in which to save the key (~/.ssh/id_ed25519): [Enter]</div>
+                    <div class="out">Enter passphrase (empty for no passphrase): [Enter]</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p>Mostre a chave <strong>pública</strong> gerada (esta é a que vai para o GitHub):</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div><button class="copy-btn"
+                      onclick="copyCmd(this,'cat ~/.ssh/id_ed25519.pub')">copiar</button>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd">cat
+                        ~/.ssh/id_ed25519.pub</span></div>
+                    <div class="out success">ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA... seuemail@exemplo.com</div>
+                  </div>
+                </div>
+                <p style="margin-top:8px; font-size:13px; color:var(--text-muted);">Copie toda a linha que aparece.</p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p>No GitHub, vá a: <strong>Settings → SSH and GPG keys → New SSH key</strong>. Cole a chave pública no
+                  campo "Key" e guarde.</p>
+                <div class="warn-note">
+                  <div class="note-title">⚠️ Atenção</div>
+                  A chave <strong>privada</strong> (<code>id_ed25519</code>) nunca deve ser partilhada. A chave
+                  <strong>pública</strong> (<code>id_ed25519.pub</code>) é a que vai para o GitHub.
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p><strong>Teste</strong> a ligação SSH ao GitHub:</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div><button class="copy-btn"
+                      onclick="copyCmd(this,'ssh -T git@github.com')">copiar</button>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd">ssh <span
+                          class="flag">-T</span> git@github.com</span></div>
+                    <div class="out success">Hi username! You've successfully authenticated...</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="note-caderno">
+            <div class="note-title">✏️ Anotar no Caderno</div>
+            <ul>
+              <li>Qual é a diferença entre chave pública e chave privada?</li>
+              <li>Onde ficam guardadas as chaves SSH no teu computador? (pesquisa a pasta <code>~/.ssh/</code>)</li>
+              <li>O que significa a mensagem de sucesso que aparece ao testar?</li>
+            </ul>
+          </div>
+
+          <div class="discuss">
+            <div class="note-title">💬 Discussão em Grupo</div>
+            <ul>
+              <li>Por que usar SSH em vez de password?</li>
+              <li>Cada computador deve ter a sua própria chave SSH? Porquê?</li>
+            </ul>
+          </div>
+
+          <ul class="task-list">
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> Chave SSH gerada no PC 1</li>
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> Chave SSH gerada no PC 2</li>
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> Ambas as chaves adicionadas ao
+              GitHub</li>
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> <code>ssh -T git@github.com</code>
+              retornou sucesso nos dois PCs</li>
+          </ul>
+
+          <button class="complete-btn" onclick="completeSection(this, 1)">✓ Marcar secção como concluída</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════════
+         SECÇÃO 2 — PRIMEIRO REPOSITÓRIO
+    ═══════════════════════════════════════════════ -->
+      <div class="lab-section" id="s2">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="section-num">FASE 03</span>
+          <span class="section-title">Salvar o Primeiro Projecto no GitHub</span>
+          <span class="section-tag tag-commit">git init / push</span>
+          <span class="section-chevron">▾</span>
+        </div>
+        <div class="section-body">
+          <div class="concept">
+            <strong>O que fazemos?</strong> Criamos uma pasta local, inicializamos o Git nela, criamos um ficheiro,
+            fazemos o primeiro commit e enviamos para o GitHub. Este é o fluxo fundamental: <em>modificar → adicionar →
+              commit → push</em>.
+          </div>
+          <div class="analogy">
+            <strong>Analogia:</strong> É como escrever numa folha de papel (modificar), colocar na pasta certa (stage),
+            carimbar como "versão oficial" (commit) e depois enviar para o arquivo central da empresa (push ao GitHub).
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p>No <strong>PC 1</strong>: Crie uma pasta e inicialize o Git:</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div><button class="copy-btn"
+                      onclick="copyCmd(this,'mkdir projeto-lab && cd projeto-lab && git init')">copiar</button>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd">mkdir projeto-lab</span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd">cd projeto-lab</span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        init</span></div>
+                    <div class="out success">Initialized empty Git repository in .../projeto-lab/.git/</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p>Crie um ficheiro <code>index.html</code> simples:</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div><button class="copy-btn" onclick="copyCmd(this,'echo \"
+                      <!DOCTYPE html>
+                      <html>
+
+                      <body>
+                        <h1>Olá Git!</h1>
+                      </body>
+
+                      </html>\" > index.html')">copiar
+                    </button>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd">echo <span
+                          class="str">"&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;body&gt;&lt;h1&gt;Olá
+                          Git!&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;"</span> &gt; index.html</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p>Adicione o ficheiro à área de stage e faça o primeiro commit:</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div><button class="copy-btn"
+                      onclick="copyCmd(this,'git add index.html\ngit commit -m \" primeiro commit: adiciona
+                      index.html\"')">copiar</button>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span> add
+                        index.html</span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        commit <span class="flag">-m</span> <span class="str">"primeiro commit: adiciona
+                          index.html"</span></span></div>
+                    <div class="out success">[main (root-commit) a1b2c3d] primeiro commit: adiciona index.html</div>
+                    <div class="out"> 1 file changed, 1 insertion(+)</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p>No GitHub, crie um <strong>repositório vazio</strong> chamado <code>projeto-lab</code> (sem README).
+                  Copie o URL SSH. Depois ligue e envie:</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div><button class="copy-btn"
+                      onclick="copyCmd(this,'git remote add origin git@github.com:SEU_USUARIO/projeto-lab.git\ngit branch -M main\ngit push -u origin main')">copiar</button>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        remote add origin git@github.com:<span class="str">SEU_USUARIO</span>/projeto-lab.git</span>
+                    </div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        branch <span class="flag">-M</span> main</span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        push <span class="flag">-u</span> origin main</span></div>
+                    <div class="out success">Branch 'main' set up to track remote branch 'main' from 'origin'.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="note-caderno">
+            <div class="note-title">✏️ Anotar no Caderno</div>
+            <ul>
+              <li>O que é a pasta oculta <code>.git/</code> que aparece dentro do projecto? O que ela contém?</li>
+              <li>O que significa "origin"? Porque damos esse nome?</li>
+              <li>O que faz a flag <code>-u</code> no comando push?</li>
+              <li>Desenhe um diagrama: Pasta Local → Stage → Commit → GitHub</li>
+            </ul>
+          </div>
+
+          <div class="discuss">
+            <div class="note-title">💬 Discussão em Grupo</div>
+            <ul>
+              <li>O que acontece se fizermos <code>git init</code> numa pasta que já tem ficheiros?</li>
+              <li>Por que é importante escrever mensagens de commit claras?</li>
+            </ul>
+          </div>
+
+          <ul class="task-list">
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> Pasta criada e git init executado
+            </li>
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> index.html criado e commit feito
+            </li>
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> Repositório visível no GitHub com o
+              ficheiro</li>
+          </ul>
+
+          <button class="complete-btn" onclick="completeSection(this, 2)">✓ Marcar secção como concluída</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════════
+         SECÇÃO 3 — NOVO COMMIT
+    ═══════════════════════════════════════════════ -->
+      <div class="lab-section" id="s3">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="section-num">FASE 04</span>
+          <span class="section-title">Salvar um Novo Commit</span>
+          <span class="section-tag tag-commit">commit</span>
+          <span class="section-chevron">▾</span>
+        </div>
+        <div class="section-body">
+          <div class="concept">
+            <strong>Repetição deliberada:</strong> Nesta secção vamos repetir o ciclo de commit <strong>três
+              vezes</strong> para solidificar a memória muscular. Cada commit é uma fotografia permanente do estado do
+            projecto naquele momento.
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p><strong>1.º Ciclo</strong> — Modifique o index.html, adicione um parágrafo:</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd">echo <span
+                          class="str">"&lt;p&gt;Versão 2 do projecto&lt;/p&gt;"</span> &gt;&gt; index.html</span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span> add
+                        index.html</span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        commit <span class="flag">-m</span> <span class="str">"adiciona parágrafo versão
+                          2"</span></span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        push</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p><strong>2.º Ciclo</strong> — Crie um novo ficheiro <code>style.css</code>:</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd">echo <span class="str">"body {
+                          background: #222; color: white; }"</span> &gt; style.css</span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span> add
+                        style.css</span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        commit <span class="flag">-m</span> <span class="str">"adiciona style.css com tema
+                          escuro"</span></span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        push</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p><strong>3.º Ciclo</strong> — Adicione todos os ficheiros de uma vez com <code>git add .</code>:</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd">echo <span
+                          class="str">"console.log('olá');"</span> &gt; script.js</span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span> add
+                        <span class="flag">.</span></span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        commit <span class="flag">-m</span> <span class="str">"adiciona script.js"</span></span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        push</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="note-caderno">
+            <div class="note-title">✏️ Anotar no Caderno</div>
+            <ul>
+              <li>Qual é a diferença entre <code>git add ficheiro.txt</code> e <code>git add .</code>?</li>
+              <li>Depois de 3 commits, quantos commits aparecem no GitHub? Verifique!</li>
+              <li>O que é o "hash" que aparece entre parênteses depois de cada commit?</li>
+            </ul>
+          </div>
+
+          <ul class="task-list">
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> 3 commits realizados e visíveis no
+              GitHub</li>
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> Diferença entre
+              <code>add ficheiro</code> e <code>add .</code> compreendida
+            </li>
+          </ul>
+
+          <button class="complete-btn" onclick="completeSection(this, 3)">✓ Marcar secção como concluída</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════════
+         SECÇÃO 4 — GIT STATUS & LOG
+    ═══════════════════════════════════════════════ -->
+      <div class="lab-section" id="s4">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="section-num">FASE 05</span>
+          <span class="section-title">Git Status & Git Log — Inspeccionar o Projecto</span>
+          <span class="section-tag tag-inspect">inspecção</span>
+          <span class="section-chevron">▾</span>
+        </div>
+        <div class="section-body">
+          <div class="concept">
+            <strong>git status</strong> mostra o estado actual dos ficheiros (modificados, em stage, não rastreados).
+            <strong>git log</strong> mostra o histórico de todos os commits feitos. Juntos, são como o painel de
+            controlo do teu projecto.
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p>Modifique o <code>index.html</code> <strong>sem fazer commit</strong>. Depois execute:</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div><button class="copy-btn"
+                      onclick="copyCmd(this,'git status')">copiar</button>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        status</span></div>
+                    <div class="out warn">On branch main</div>
+                    <div class="out warn">Changes not staged for commit:</div>
+                    <div class="out error"> modified: index.html</div>
+                  </div>
+                </div>
+                <p style="margin-top:8px; font-size:13px; color:var(--text-muted);">Agora faça
+                  <code>git add index.html</code> e execute git status novamente. Observe a diferença!
+                </p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p>Veja o histórico completo de commits:</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div><button class="copy-btn"
+                      onclick="copyCmd(this,'git log')">copiar</button>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        log</span></div>
+                    <div class="out warn">commit a1b2c3d4e5f6... (HEAD -> main, origin/main)</div>
+                    <div class="out">Author: Seu Nome &lt;seuemail@exemplo.com&gt;</div>
+                    <div class="out">Date: Mon Apr 28 2026</div>
+                    <div class="out"> </div>
+                    <div class="out"> adiciona script.js</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p>Versão compacta e mais legível do log:</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div><button class="copy-btn"
+                      onclick="copyCmd(this,'git log --oneline --graph')">copiar</button>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span> log
+                        <span class="flag">--oneline</span> <span class="flag">--graph</span></span></div>
+                    <div class="out success">* a1b2c3d adiciona script.js</div>
+                    <div class="out success">* b2c3d4e adiciona style.css</div>
+                    <div class="out success">* c3d4e5f primeiro commit</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="note-caderno">
+            <div class="note-title">✏️ Anotar no Caderno</div>
+            <ul>
+              <li>Quais são os 3 estados que um ficheiro pode ter no Git? (Untracked, Modified, Staged)</li>
+              <li>O que significa <code>HEAD</code> no output do git log?</li>
+              <li>Copie para o caderno o output do <code>git log --oneline</code> do vosso projecto.</li>
+              <li>Execute <code>git status</code> antes e depois de um <code>git add</code> e descreva a diferença.</li>
+            </ul>
+          </div>
+
+          <div class="discuss">
+            <div class="note-title">💬 Discussão em Grupo</div>
+            <ul>
+              <li>Para que serve saber o histórico de commits? Pensem num cenário real de equipa.</li>
+              <li>O que acontece se dois membros editarem o mesmo ficheiro? (Pesquisem "git conflict")</li>
+            </ul>
+          </div>
+
+          <ul class="task-list">
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> <code>git status</code> executado
+              em 3 estados diferentes (sem modificar, após modificar, após add)</li>
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> <code>git log --oneline</code>
+              executado e copiado para o caderno</li>
+          </ul>
+
+          <button class="complete-btn" onclick="completeSection(this, 4)">✓ Marcar secção como concluída</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════════
+         SECÇÃO 5 — GIT STAGE & DIFF
+    ═══════════════════════════════════════════════ -->
+      <div class="lab-section" id="s5">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="section-num">FASE 06</span>
+          <span class="section-title">Git Stage, Unstage & Git Diff</span>
+          <span class="section-tag tag-inspect">stage / diff</span>
+          <span class="section-chevron">▾</span>
+        </div>
+        <div class="section-body">
+          <div class="concept">
+            <strong>git diff</strong> mostra exactamente o que mudou nos ficheiros. <strong>Stage</strong> (área de
+            preparação) é onde colocas as modificações antes de comprometê-las com um commit. É possível reverter o
+            stage sem perder o trabalho.
+          </div>
+          <div class="analogy">
+            <strong>Analogia:</strong> O stage é como a bandeja de saída do correio. Colocas as cartas que queres enviar
+            (add). Ainda podes retirá-las (reset) antes de as entregar ao carteiro (commit). O git diff mostra o
+            conteúdo das cartas antes de as fechar.
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p>Modifique o <code>index.html</code> (adicione qualquer texto). Ver o que mudou <strong>antes</strong>
+                  de adicionar ao stage:</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div><button class="copy-btn"
+                      onclick="copyCmd(this,'git diff')">copiar</button>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        diff</span></div>
+                    <div class="out warn">--- a/index.html</div>
+                    <div class="out warn">+++ b/index.html</div>
+                    <div class="out error">- &lt;h1&gt;Olá Git!&lt;/h1&gt;</div>
+                    <div class="out success">+ &lt;h1&gt;Olá Git! Actualizado&lt;/h1&gt;</div>
+                  </div>
+                </div>
+                <p style="font-size:13px;color:var(--text-muted);margin-top:6px;">Linhas a <span
+                    style="color:var(--red)">vermelho (−)</span> foram removidas. Linhas a <span
+                    style="color:var(--green)">verde (+)</span> foram adicionadas.</p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p>Adicione ao stage e veja o diff <strong>staged</strong>:</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div><button class="copy-btn"
+                      onclick="copyCmd(this,'git add index.html\ngit diff --staged')">copiar</button>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span> add
+                        index.html</span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        diff <span class="flag">--staged</span></span></div>
+                    <div class="out comment"># Mostra as diferenças que ESTÃO em stage (prontas para commit)</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p>Remova do stage <strong>sem perder</strong> as alterações:</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div><button class="copy-btn"
+                      onclick="copyCmd(this,'git restore --staged index.html')">copiar</button>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        restore <span class="flag">--staged</span> index.html</span></div>
+                    <div class="out comment"># O ficheiro volta a "modified" mas não perde o conteúdo</div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        status</span></div>
+                    <div class="out warn"> modified: index.html</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="note-caderno">
+            <div class="note-title">✏️ Anotar no Caderno</div>
+            <ul>
+              <li>Qual a diferença entre <code>git diff</code> e <code>git diff --staged</code>?</li>
+              <li>O <code>git restore --staged</code> apaga o trabalho feito? Explica o que acontece.</li>
+              <li>Desenhe o ciclo: Working Directory → Stage → Commit, com os comandos em cada seta.</li>
+            </ul>
+          </div>
+
+          <ul class="task-list">
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> git diff executado e output anotado
+            </li>
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> git diff --staged executado após
+              git add</li>
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> Unstage feito com git restore
+              --staged</li>
+          </ul>
+
+          <button class="complete-btn" onclick="completeSection(this, 5)">✓ Marcar secção como concluída</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════════
+         SECÇÃO 6 — GIT CHECKOUT
+    ═══════════════════════════════════════════════ -->
+      <div class="lab-section" id="s6">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="section-num">FASE 07</span>
+          <span class="section-title">Git Checkout — Navegar no Histórico</span>
+          <span class="section-tag tag-nav">checkout</span>
+          <span class="section-chevron">▾</span>
+        </div>
+        <div class="section-body">
+          <div class="concept">
+            <strong>git checkout</strong> permite-te "viajar no tempo" entre commits ou trocar de branch. É uma das
+            operações mais poderosas do Git — podes ver exactamente como estava o projecto em qualquer ponto da
+            história.
+          </div>
+          <div class="analogy">
+            <strong>Analogia:</strong> É como uma máquina do tempo. Com o hash do commit como "coordenadas", consegues
+            ver o projecto exactamente como estava naquele momento — sem destruir nada do presente.
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p>Primeiro, copie o hash de um commit antigo com o git log:</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div><button class="copy-btn"
+                      onclick="copyCmd(this,'git log --oneline')">copiar</button>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span> log
+                        <span class="flag">--oneline</span></span></div>
+                    <div class="out success">a1b2c3d (HEAD) último commit</div>
+                    <div class="out">b2c3d4e commit anterior</div>
+                    <div class="out">c3d4e5f primeiro commit</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p>Viaje para um commit anterior (substitua pelo hash real do vosso projecto):</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div><button class="copy-btn"
+                      onclick="copyCmd(this,'git checkout c3d4e5f')">copiar</button>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        checkout c3d4e5f</span></div>
+                    <div class="out warn">Note: switching to 'c3d4e5f'.</div>
+                    <div class="out warn">You are in 'detached HEAD' state.</div>
+                    <div class="out">HEAD is now at c3d4e5f primeiro commit</div>
+                  </div>
+                </div>
+                <p style="font-size:13px;color:var(--text-muted);margin-top:6px;">Abra o <code>index.html</code>. O
+                  ficheiro está como estava no primeiro commit!</p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p>Volte para a versão mais recente (main):</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div><button class="copy-btn"
+                      onclick="copyCmd(this,'git checkout main')">copiar</button>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        checkout main</span></div>
+                    <div class="out success">Switched to branch 'main'</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p>Desfaça modificações não salvas num ficheiro (cuidado: isto apaga o trabalho!):</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div><button class="copy-btn"
+                      onclick="copyCmd(this,'git restore index.html')">copiar</button>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        restore index.html</span></div>
+                    <div class="out warn"># Ficheiro volta ao estado do último commit. Alterações perdidas!</div>
+                  </div>
+                </div>
+                <div class="warn-note">
+                  <div class="note-title">⚠️ Cuidado</div>
+                  <code>git restore</code> sem <code>--staged</code> apaga as alterações não commitadas permanentemente.
+                  Não há undo!
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="note-caderno">
+            <div class="note-title">✏️ Anotar no Caderno</div>
+            <ul>
+              <li>O que significa "detached HEAD state"? Pesquise e explique com as vossas palavras.</li>
+              <li>Qual a diferença entre <code>git checkout [hash]</code> e <code>git checkout main</code>?</li>
+              <li>Qual é a diferença entre <code>git restore --staged</code> e <code>git restore</code> (sem a flag)?
+              </li>
+            </ul>
+          </div>
+
+          <ul class="task-list">
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> Viagem a commit antigo realizada e
+              ficheiro inspecionado</li>
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> Retorno ao main realizado com
+              sucesso</li>
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> git restore testado (com
+              precaução!)</li>
+          </ul>
+
+          <button class="complete-btn" onclick="completeSection(this, 6)">✓ Marcar secção como concluída</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════════
+         SECÇÃO 7 — .GITIGNORE
+    ═══════════════════════════════════════════════ -->
+      <div class="lab-section" id="s7">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="section-num">FASE 08</span>
+          <span class="section-title">Ficheiro .gitignore</span>
+          <span class="section-tag tag-config">.gitignore</span>
+          <span class="section-chevron">▾</span>
+        </div>
+        <div class="section-body">
+          <div class="concept">
+            <strong>.gitignore</strong> é um ficheiro especial que diz ao Git quais ficheiros e pastas deve <em>ignorar
+              completamente</em> — como passwords, chaves de API, pastas de dependências (<code>node_modules/</code>) ou
+            ficheiros temporários do sistema operativo.
+          </div>
+          <div class="analogy">
+            <strong>Analogia:</strong> É uma lista negra para o Git. Como um porteiro com lista de não admitidos: mesmo
+            que esses ficheiros existam na pasta, o Git age como se não estivessem lá.
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p>Crie ficheiros que <strong>não</strong> devem ir para o GitHub:</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd">echo <span
+                          class="str">"DB_PASSWORD=123456"</span> &gt; .env</span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd">mkdir node_modules</span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        status</span></div>
+                    <div class="out warn">Untracked files: .env, node_modules/</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p>Crie o ficheiro <code>.gitignore</code>:</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd">cat &gt; .gitignore &lt;&lt;
+                        EOF</span></div>
+                    <div class="out">.env</div>
+                    <div class="out">node_modules/</div>
+                    <div class="out">*.log</div>
+                    <div class="out">.DS_Store</div>
+                    <div class="out">EOF</div>
+                  </div>
+                </div>
+                <p style="font-size:13px;color:var(--text-muted);margin-top:6px;">Pode também criar com um editor de
+                  texto. Cada linha é um padrão a ignorar.</p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p>Verifique que o Git passou a ignorar esses ficheiros:</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div><button class="copy-btn"
+                      onclick="copyCmd(this,'git status')">copiar</button>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        status</span></div>
+                    <div class="out warn">Untracked files:</div>
+                    <div class="out success"> .gitignore</div>
+                    <div class="out comment"># .env e node_modules já não aparecem!</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p>Commit do <code>.gitignore</code>:</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span> add
+                        .gitignore</span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        commit <span class="flag">-m</span> <span class="str">"adiciona .gitignore"</span></span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        push</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="note-caderno">
+            <div class="note-title">✏️ Anotar no Caderno</div>
+            <ul>
+              <li>Por que nunca devemos commitar um ficheiro <code>.env</code> com passwords?</li>
+              <li>O que faz o padrão <code>*.log</code> no .gitignore?</li>
+              <li>Pesquisem "gitignore.io" — o que é este site? Como pode ajudar?</li>
+            </ul>
+          </div>
+
+          <ul class="task-list">
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> .gitignore criado com pelo menos 4
+              entradas</li>
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> Verificado que .env não aparece no
+              git status</li>
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> .gitignore committed e enviado para
+              o GitHub</li>
+          </ul>
+
+          <button class="complete-btn" onclick="completeSection(this, 7)">✓ Marcar secção como concluída</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════════
+         SECÇÃO 8 — CLONAR PROJECTO
+    ═══════════════════════════════════════════════ -->
+      <div class="lab-section" id="s8">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="section-num">FASE 09</span>
+          <span class="section-title">Clonar e Modificar um Projecto</span>
+          <span class="section-tag tag-commit">git clone</span>
+          <span class="section-chevron">▾</span>
+        </div>
+        <div class="section-body">
+          <div class="concept">
+            <strong>git clone</strong> cria uma cópia completa de um repositório remoto no teu computador — incluindo
+            todo o histórico de commits, branches e ficheiros. É a porta de entrada para contribuir num projecto
+            existente.
+          </div>
+
+          <div class="two-computer">
+            <div class="note-title">🖥️🖥️ Exercício dos Dois Computadores</div>
+            <ul>
+              <li><strong>PC 2</strong> vai clonar o repositório que o <strong>PC 1</strong> criou</li>
+              <li>PC 2 fará uma modificação e fará push</li>
+              <li>PC 1 fará pull para receber as alterações do PC 2</li>
+            </ul>
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p><strong>PC 2</strong>: Clone o repositório do PC 1 (peça o URL SSH ao PC 1):</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash — PC 2</div>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd">cd ~</span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        clone git@github.com:<span class="str">USUARIO_PC1</span>/projeto-lab.git</span></div>
+                    <div class="out success">Cloning into 'projeto-lab'...</div>
+                    <div class="out success">done.</div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd">cd projeto-lab</span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd">ls</span></div>
+                    <div class="out">index.html style.css script.js .gitignore</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p>Para que o PC 2 possa fazer push, o dono (PC 1) deve ir ao GitHub e adicionar o utilizador do PC 2
+                  como colaborador: <strong>Settings → Collaborators → Add people</strong>.</p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p><strong>PC 2</strong>: Modifique um ficheiro, commit e push:</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash — PC 2</div>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd">echo <span
+                          class="str">"&lt;footer&gt;Modificado pelo PC2&lt;/footer&gt;"</span> &gt;&gt;
+                        index.html</span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span> add
+                        .</span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        commit <span class="flag">-m</span> <span class="str">"PC2: adiciona footer ao
+                          index"</span></span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        push</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p><strong>PC 1</strong>: Actualize o repositório local com as alterações do PC 2:</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash — PC 1</div>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        pull</span></div>
+                    <div class="out success">Updating a1b2c3d..b2c3d4e</div>
+                    <div class="out success">Fast-forward</div>
+                    <div class="out"> index.html | 1 +</div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd">cat index.html</span></div>
+                    <div class="out success"># O footer do PC2 aparece agora no PC1!</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="note-caderno">
+            <div class="note-title">✏️ Anotar no Caderno</div>
+            <ul>
+              <li>O que é <code>git clone</code>? O que é copiado além dos ficheiros?</li>
+              <li>O que faz <code>git pull</code>? É diferente de <code>git fetch</code>? (Pesquisem!)</li>
+              <li>Ambos os computadores têm agora o mesmo histórico de commits? Verifiquem com
+                <code>git log --oneline</code> nos dois PCs.
+              </li>
+            </ul>
+          </div>
+
+          <div class="discuss">
+            <div class="note-title">💬 Discussão em Grupo</div>
+            <ul>
+              <li>O que teria acontecido se ambos os PCs tivessem editado a mesma linha do index.html? (Conflito de
+                merge — pesquisem!)</li>
+            </ul>
+          </div>
+
+          <ul class="task-list">
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> PC 2 clonou o repositório com
+              sucesso</li>
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> PC 2 fez commit e push de uma
+              alteração</li>
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> PC 1 recebeu as alterações com git
+              pull</li>
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> Ambos os git log estão iguais</li>
+          </ul>
+
+          <button class="complete-btn" onclick="completeSection(this, 8)">✓ Marcar secção como concluída</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════════
+         SECÇÃO 9 — COLABORAÇÃO CONTINUADA
+    ═══════════════════════════════════════════════ -->
+      <div class="lab-section" id="s9">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="section-num">FASE 10</span>
+          <span class="section-title">Colaboração — Dois PCs em Paralelo</span>
+          <span class="section-tag tag-commit">pull / push</span>
+          <span class="section-chevron">▾</span>
+        </div>
+        <div class="section-body">
+          <div class="concept">
+            <strong>Fluxo de trabalho colaborativo:</strong> Cada membro deve sempre fazer <code>git pull</code> antes
+            de começar a trabalhar, para garantir que tem a versão mais recente. Isto evita conflitos desnecessários.
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p><strong>Simultaneamente</strong> — PC 1 edita o <code>style.css</code> e PC 2 cria um novo ficheiro
+                  <code>sobre.html</code>. Cada um faz commit e push:
+                </p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">PC 1 e PC 2 — em paralelo</div>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="out comment"># PC 1: edita style.css</div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span> add
+                        . &amp;&amp; <span class="kw">git</span> commit <span class="flag">-m</span> <span
+                          class="str">"PC1: actualiza estilos"</span> &amp;&amp; <span class="kw">git</span> push</span>
+                    </div>
+                    <div class="out"> </div>
+                    <div class="out comment"># PC 2: cria sobre.html</div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        pull &amp;&amp; <span class="kw">git</span> add . &amp;&amp; <span class="kw">git</span> commit
+                        <span class="flag">-m</span> <span class="str">"PC2: adiciona sobre.html"</span> &amp;&amp;
+                        <span class="kw">git</span> push</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p>Ambos fazem <code>git pull</code> e confirmam que têm os ficheiros do outro. Verifiquem o log:</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div><button class="copy-btn"
+                      onclick="copyCmd(this,'git log --oneline --all')">copiar</button>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span> log
+                        <span class="flag">--oneline</span> <span class="flag">--all</span></span></div>
+                    <div class="out success"># Devem ver os commits de ambos os PCs!</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="note-caderno">
+            <div class="note-title">✏️ Anotar no Caderno</div>
+            <ul>
+              <li>Quantos commits tem o projecto agora no total?</li>
+              <li>Quem são os autores dos commits? (Verifiquem com <code>git log</code>)</li>
+              <li>Qual é a regra de ouro antes de começar a trabalhar num projecto colaborativo?</li>
+            </ul>
+          </div>
+
+          <ul class="task-list">
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> PC 1 e PC 2 fizeram commits
+              independentes</li>
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> Ambos fizeram pull e têm os
+              ficheiros do outro</li>
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> git log mostra commits de dois
+              autores diferentes</li>
+          </ul>
+
+          <button class="complete-btn" onclick="completeSection(this, 9)">✓ Marcar secção como concluída</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════════
+         SECÇÃO 10 — DELETAR COMMITS
+    ═══════════════════════════════════════════════ -->
+      <div class="lab-section" id="s10">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="section-num">FASE 11</span>
+          <span class="section-title">Deletar Commits</span>
+          <span class="section-tag tag-undo">reset</span>
+          <span class="section-chevron">▾</span>
+        </div>
+        <div class="section-body">
+          <div class="concept">
+            <strong>Existem duas formas principais de "desfazer" commits:</strong>
+            <br>• <code>git reset --soft</code> — remove o commit mas mantém os ficheiros no stage
+            <br>• <code>git reset --hard</code> — remove o commit E descarta todas as alterações (irreversível!)
+          </div>
+          <div class="warn-note">
+            <div class="note-title">⚠️ Aviso Importante</div>
+            Usar <code>git reset --hard</code> num repositório partilhado pode causar problemas graves para outros
+            colaboradores. Nunca faças reset de commits que já foram enviados para o GitHub sem avisar a equipa.
+          </div>
+          <div class="analogy">
+            <strong>Analogia:</strong> <code>--soft</code> é como rasgar o carimbo "versão oficial" mas guardar o
+            documento na pasta. <code>--hard</code> é rasgar o carimbo E destruir o documento.
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p>Faça um commit de teste para praticar o reset:</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd">echo <span class="str">"commit
+                          de teste para apagar"</span> &gt; teste.txt</span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span> add
+                        . &amp;&amp; <span class="kw">git</span> commit <span class="flag">-m</span> <span
+                          class="str">"commit de teste"</span></span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span> log
+                        <span class="flag">--oneline</span></span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p><strong>Método 1:</strong> Apagar o último commit mas manter os ficheiros no stage
+                  (<code>--soft</code>):</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div><button class="copy-btn"
+                      onclick="copyCmd(this,'git reset --soft HEAD~1')">copiar</button>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        reset <span class="flag">--soft</span> HEAD~1</span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        status</span></div>
+                    <div class="out warn">Changes to be committed: (staged)</div>
+                    <div class="out warn"> new file: teste.txt</div>
+                    <div class="out comment"># O commit foi apagado, mas teste.txt ainda existe em stage!</div>
+                  </div>
+                </div>
+                <p style="font-size:13px;color:var(--text-muted);margin-top:6px;"><code>HEAD~1</code> significa "1
+                  commit atrás do actual". <code>HEAD~2</code> seria 2 commits atrás.</p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p>Volte a commitar (para ter algo para testar o hard reset):</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        commit <span class="flag">-m</span> <span class="str">"commit de teste
+                          (novamente)"</span></span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p><strong>Método 2:</strong> Apagar commit E os ficheiros (<code>--hard</code>). Cuidado!</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div><button class="copy-btn"
+                      onclick="copyCmd(this,'git reset --hard HEAD~1')">copiar</button>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        reset <span class="flag">--hard</span> HEAD~1</span></div>
+                    <div class="out warn">HEAD is now at a1b2c3d commit anterior</div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd">ls</span></div>
+                    <div class="out comment"># teste.txt desapareceu completamente!</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p><strong>Alternativa segura</strong> para desfazer no histórico público — <code>git revert</code> cria
+                  um novo commit que desfaz o anterior:</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">bash</div><button class="copy-btn"
+                      onclick="copyCmd(this,'git revert HEAD')">copiar</button>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        revert HEAD</span></div>
+                    <div class="out comment"># Abre editor de texto. Salve e feche para confirmar o revert commit.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="note-caderno">
+            <div class="note-title">✏️ Anotar no Caderno</div>
+            <ul>
+              <li>Qual é a diferença entre <code>git reset</code> e <code>git revert</code>?</li>
+              <li>Em que situações deveria usar --soft vs --hard?</li>
+              <li>Por que o git revert é mais seguro para repositórios partilhados?</li>
+              <li>O que significa <code>HEAD~1</code>? E <code>HEAD~3</code>?</li>
+            </ul>
+          </div>
+
+          <div class="discuss">
+            <div class="note-title">💬 Discussão em Grupo</div>
+            <ul>
+              <li>Se o PC 1 fizer reset de commits que já existem no PC 2, o que acontece quando o PC 2 fizer push?
+                Pesquisem "force push" e discutam os riscos.</li>
+            </ul>
+          </div>
+
+          <ul class="task-list">
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> git reset --soft testado e
+              comportamento observado</li>
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> git reset --hard testado com
+              cuidado</li>
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> Diferença entre reset e revert
+              anotada</li>
+          </ul>
+
+          <button class="complete-btn" onclick="completeSection(this, 10)">✓ Marcar secção como concluída</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════════
+         SECÇÃO 11 — REVISÃO FINAL
+    ═══════════════════════════════════════════════ -->
+      <div class="lab-section" id="s11">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="section-num">FASE 12</span>
+          <span class="section-title">Revisão Final — Ciclo Completo</span>
+          <span class="section-tag tag-commit">revisão</span>
+          <span class="section-chevron">▾</span>
+        </div>
+        <div class="section-body">
+          <div class="concept">
+            <strong>Consolidação:</strong> Repitam o ciclo completo de trabalho colaborativo, desta vez sem consultar as
+            instruções. Cada passo deve ser realizado de memória.
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <div class="step-num"></div>
+              <div class="step-content">
+                <p><strong>Desafio Final — Sem consultar!</strong> Cada PC deve executar de memória:</p>
+                <div class="terminal">
+                  <div class="terminal-bar">
+                    <div class="t-dot red"></div>
+                    <div class="t-dot yel"></div>
+                    <div class="t-dot grn"></div>
+                    <div class="terminal-label">Sequência completa a memorizar</div>
+                  </div>
+                  <div class="terminal-body">
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        pull</span></div>
+                    <div class="out comment"> ↓ modificar ficheiros</div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        status</span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        diff</span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span> add
+                        .</span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        status</span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        commit <span class="flag">-m</span> <span class="str">"mensagem clara e
+                          descritiva"</span></span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span> log
+                        <span class="flag">--oneline</span></span></div>
+                    <div class="cmd-line"><span class="prompt">$</span><span class="cmd"><span class="kw">git</span>
+                        push</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="note-caderno">
+            <div class="note-title">✏️ Tarefa de Revisão no Caderno</div>
+            <ul>
+              <li>Desenhe o diagrama completo do Git: Working Directory → Stage → Local Repo → Remote Repo, com todos os
+                comandos nas setas.</li>
+              <li>Escreva 5 situações reais do dia-a-dia onde o Git seria útil.</li>
+              <li>Liste 5 comandos que aprenderam e explique cada um com as suas palavras.</li>
+            </ul>
+          </div>
+
+          <ul class="task-list">
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> Ciclo completo realizado de memória
+              por PC 1</li>
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> Ciclo completo realizado de memória
+              por PC 2</li>
+            <li class="task-item" onclick="toggleTask(this)"><input type="checkbox"> Diagrama desenhado no caderno</li>
+          </ul>
+
+          <button class="complete-btn" onclick="completeSection(this, 11)">✓ Marcar secção como concluída</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════════
+         GUIA DO RELATÓRIO
+    ═══════════════════════════════════════════════ -->
+      <div class="report-section">
+        <h2>📄 Guia para o Relatório Final</h2>
+        <p style="color:var(--text-muted);font-size:14px;margin-bottom:16px;">O relatório deve ser entregue pelo grupo
+          no meu e-mail, <a href="mailto:judson.paiva@isptec.co.ao">judson.paiva@isptec.co.ao</a> e
+          deve reflectir o que cada membro compreendeu — não é uma cópia dos comandos, mas uma <strong>interpretação e
+            análise</strong> do que fizeram. Recordar que esse Laboratório será defendido, junto com o outro Laboratório
+          da próxima semana e ambos, farão parte da 1ªPP.</p>
+        <div class="report-grid">
+          <div class="report-card">
+            <strong>1. Identificação</strong>
+            Nome do grupo, membros, data, disciplina e número de computadores utilizados.
+          </div>
+          <div class="report-card">
+            <strong>2. Objectivos</strong>
+            O que esperavam aprender antes de começar o laboratório?
+          </div>
+          <div class="report-card">
+            <strong>3. Descrição dos Exercícios</strong>
+            Para cada secção: o que foi feito, o comando executado, e o resultado observado.
+          </div>
+          <div class="report-card">
+            <strong>4. Dificuldades Encontradas</strong>
+            Que erros ocorreram? Como foram resolvidos? Recorreram à internet?
+          </div>
+          <div class="report-card">
+            <strong>5. Conceitos Aprendidos</strong>
+            Expliquem com as vossas palavras: o que é commit, stage, push, pull, clone, SSH, .gitignore.
+          </div>
+          <div class="report-card">
+            <strong>6. Conclusão</strong>
+            O que concluíram sobre o Git? Para que serve na vida profissional de um desenvolvedor?
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <footer>
+    <p>LAB Git & GitHub — Material Didáctico · Baseado em: Chacon & Straub, <em>Pro Git</em> (2014) · Fowler,
+      <em>Patterns of Enterprise Application Architecture</em> · git-scm.com/doc
+    </p>
+    <p style="margin-top:8px;">Fontes Bibliográficas: Scott Chacon & Ben Straub — <em>Pro Git</em>, 2ª ed. (Apress,
+      2014, gratuito em git-scm.com/book) · Karl Fogel — <em>Producing Open Source Software</em> (O'Reilly) · GitHub
+      Docs — docs.github.com</p>
+  </footer>
+
+  <script>
+    // ── TOGGLE SECTION ──
+    function toggleSection(header) {
+      const section = header.parentElement;
+      section.classList.toggle('open');
+      updateProgress();
+    }
+
+    // ── COMPLETE SECTION ──
+    const completed = new Set();
+    function completeSection(btn, idx) {
+      const section = btn.closest('.lab-section');
+      completed.add(idx);
+      section.classList.add('completed');
+      btn.classList.add('done-btn');
+      btn.textContent = '✓ Concluído!';
+      btn.disabled = true;
+      // Update TOC
+      const tocLinks = document.querySelectorAll('#toc a');
+      if (tocLinks[idx]) tocLinks[idx].classList.add('done');
+      updateProgress();
+    }
+
+    // ── PROGRESS ──
+    function updateProgress() {
+      const total = 12;
+      const pct = Math.round((completed.size / total) * 100);
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('pct').textContent = pct + '%';
+    }
+
+    // ── TASK CHECK ──
+    function toggleTask(li) {
+      const cb = li.querySelector('input');
+      if (event.target !== cb) cb.checked = !cb.checked;
+      li.classList.toggle('done', cb.checked);
+    }
+
+    // ── COPY CMD ──
+    function copyCmd(btn, text) {
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'copiado!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'copiar'; btn.classList.remove('copied'); }, 2000);
+      });
+    }
+
+    // ── OPEN FIRST SECTION ──
+    document.querySelector('.lab-section .section-header').click();
+
+    // ── ACTIVE TOC ──
+    const sections = document.querySelectorAll('.lab-section');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const id = e.target.id;
+          document.querySelectorAll('#toc a').forEach(a => {
+            a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+          });
+        }
+      });
+    }, { threshold: 0.3 });
+    sections.forEach(s => observer.observe(s));
+  </script>
+</body>
+
+</html>
